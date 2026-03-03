@@ -2,7 +2,7 @@
   "name": "react-svg-icon-preview",
   "displayName": "React SVG Preview",
   "description": "Preview React SVG icon components with inline gutter icons and hover preview. Supports forwardRef, memo, arrow functions, and raw .svg files.",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "publisher": "wbing",
   "license": "MIT-0",
   "repository": {

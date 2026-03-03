@@ -51,19 +51,22 @@ const PATTERNS = {
 function extractSvgAttributes(jsx: string): { viewBox?: string; width?: number; height?: number } {
   const result: { viewBox?: string; width?: number; height?: number } = {}
 
-  const viewBoxMatch = jsx.match(/viewBox=["']([^"']+)["']/)
+  const rootTagMatch = jsx.match(/<(?:svg|Svg|Icon)\b([^>]*)>/)
+  const rootAttrs = rootTagMatch?.[1] ?? ''
+
+  const viewBoxMatch = rootAttrs.match(/\bviewBox=["']([^"']+)["']/)
   if (viewBoxMatch) {
     result.viewBox = viewBoxMatch[1]
   }
 
-  const widthMatch = jsx.match(/width=\{?(\d+)\}?/)
+  const widthMatch = rootAttrs.match(/\bwidth\s*=\s*(?:\{?\s*["']?(-?\d*\.?\d+)\s*["']?\}?)/)
   if (widthMatch) {
-    result.width = parseInt(widthMatch[1], 10)
+    result.width = parseFloat(widthMatch[1])
   }
 
-  const heightMatch = jsx.match(/height=\{?(\d+)\}?/)
+  const heightMatch = rootAttrs.match(/\bheight\s*=\s*(?:\{?\s*["']?(-?\d*\.?\d+)\s*["']?\}?)/)
   if (heightMatch) {
-    result.height = parseInt(heightMatch[1], 10)
+    result.height = parseFloat(heightMatch[1])
   }
 
   return result

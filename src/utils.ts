@@ -81,6 +81,7 @@ export function jsxToSvg(
 ): string {
   const { defaultFillColor = '#888888', width = 16, height = 16 } = options
 
+  const hasIconLikeTag = /<(?:Icon|Svg)\b/i.test(jsxString)
   let svg = jsxString
 
   // Check if Icon/Svg wraps an inner <svg> element - if so, extract the inner svg
@@ -187,35 +188,27 @@ export function jsxToSvg(
   // Try to detect viewBox from path coordinates if not set
   let finalViewBox = viewBox
   if (!svg.includes('viewBox=')) {
-    // Try to detect coordinate range from path d attributes
-    const pathMatches = svg.matchAll(/d="([^"]+)"/g)
-    let maxCoord = 0
-    for (const match of pathMatches) {
-      const pathData = match[1]
-      // Extract numbers from path data
-      const numbers = pathData.match(/[-+]?[0-9]*\.?[0-9]+/g)
-      if (numbers) {
-        for (const num of numbers) {
-          const absNum = Math.abs(parseFloat(num))
-          if (absNum > maxCoord && absNum < 1000) { // ignore very large numbers
-            maxCoord = absNum
-          }
-        }
+    if (hasIconLikeTag) {
+      // Most React icon components are designed for a 24x24 coordinate system.
+      finalViewBox = options.viewBox || '0 0 24 24'
+    } else {
+      // Detect range from common geometry attributes and path data.
+      // This prevents clipping when SVG uses rect/circle/etc without viewBox.
+      let maxCoord = detectMaxCoordinate(svg)
+
+      // Determine viewBox based on max coordinate found
+      if (maxCoord > 0) {
+        // Round up to common viewBox sizes
+        let size = 16
+        if (maxCoord > 16) size = 24
+        if (maxCoord > 24) size = 32
+        if (maxCoord > 32) size = 48
+        if (maxCoord > 48) size = 64
+        if (maxCoord > 64) size = Math.ceil(maxCoord / 10) * 10
+        finalViewBox = `0 0 ${size} ${size}`
       }
     }
-    
-    // Determine viewBox based on max coordinate found
-    if (maxCoord > 0) {
-      // Round up to common viewBox sizes
-      let size = 16
-      if (maxCoord > 16) size = 24
-      if (maxCoord > 24) size = 32
-      if (maxCoord > 32) size = 48
-      if (maxCoord > 48) size = 64
-      if (maxCoord > 64) size = Math.ceil(maxCoord / 10) * 10
-      finalViewBox = `0 0 ${size} ${size}`
-    }
-    
+
     svg = svg.replace(/<svg/, `<svg viewBox="${finalViewBox}"`)
   }
 
@@ -228,6 +221,96 @@ export function jsxToSvg(
   }
 
   return svg.trim()
+}
+
+/**
+ * Parse the first numeric value from an attribute in a tag.
+ */
+function readTagNumber(tag: string, attr: string): number | undefined {
+  const match = tag.match(new RegExp(`${attr}=["']\\s*(-?\\d*\\.?\\d+)`, 'i'))
+  if (!match) {
+    return undefined
+  }
+  const value = parseFloat(match[1])
+  return Number.isFinite(value) ? value : undefined
+}
+
+/**
+ * Detect a reasonable max coordinate from common SVG primitives.
+ */
+function detectMaxCoordinate(svg: string): number {
+  let maxCoord = 0
+
+  const setMax = (value?: number) => {
+    if (value === undefined) {
+      return
+    }
+    const abs = Math.abs(value)
+    if (abs > maxCoord && abs < 1000) {
+      maxCoord = abs
+    }
+  }
+
+  const rectMatches = svg.match(/<rect\b[^>]*>/gi) || []
+  for (const tag of rectMatches) {
+    const x = readTagNumber(tag, 'x') ?? 0
+    const y = readTagNumber(tag, 'y') ?? 0
+    const width = readTagNumber(tag, 'width') ?? 0
+    const height = readTagNumber(tag, 'height') ?? 0
+    setMax(x + width)
+    setMax(y + height)
+  }
+
+  const circleMatches = svg.match(/<circle\b[^>]*>/gi) || []
+  for (const tag of circleMatches) {
+    const cx = readTagNumber(tag, 'cx') ?? 0
+    const cy = readTagNumber(tag, 'cy') ?? 0
+    const r = readTagNumber(tag, 'r') ?? 0
+    setMax(cx + r)
+    setMax(cy + r)
+  }
+
+  const ellipseMatches = svg.match(/<ellipse\b[^>]*>/gi) || []
+  for (const tag of ellipseMatches) {
+    const cx = readTagNumber(tag, 'cx') ?? 0
+    const cy = readTagNumber(tag, 'cy') ?? 0
+    const rx = readTagNumber(tag, 'rx') ?? 0
+    const ry = readTagNumber(tag, 'ry') ?? 0
+    setMax(cx + rx)
+    setMax(cy + ry)
+  }
+
+  const lineMatches = svg.match(/<line\b[^>]*>/gi) || []
+  for (const tag of lineMatches) {
+    setMax(readTagNumber(tag, 'x1'))
+    setMax(readTagNumber(tag, 'y1'))
+    setMax(readTagNumber(tag, 'x2'))
+    setMax(readTagNumber(tag, 'y2'))
+  }
+
+  const pointsMatches = svg.matchAll(/points=["']([^"']+)["']/gi)
+  for (const match of pointsMatches) {
+    const numbers = match[1].match(/[-+]?[0-9]*\.?[0-9]+/g)
+    if (!numbers) {
+      continue
+    }
+    for (const raw of numbers) {
+      setMax(parseFloat(raw))
+    }
+  }
+
+  const pathMatches = svg.matchAll(/d="([^"]+)"/g)
+  for (const match of pathMatches) {
+    const numbers = match[1].match(/[-+]?[0-9]*\.?[0-9]+/g)
+    if (!numbers) {
+      continue
+    }
+    for (const raw of numbers) {
+      setMax(parseFloat(raw))
+    }
+  }
+
+  return maxCoord
 }
 
 /**
