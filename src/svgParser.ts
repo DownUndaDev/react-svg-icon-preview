@@ -30,19 +30,19 @@ export interface ParsedSvgComponent {
  */
 const PATTERNS = {
   // Pattern 1: export function IconName() { return <svg>...</svg> }
-  functionComponent: /export\s+(?:default\s+)?function\s+(\w+)\s*\([^)]*\)\s*(?::\s*[^{]+)?\s*\{[\s\S]*?return\s*\(\s*(<(?:svg|Svg|Icon)\b[\s\S]*?<\/(?:svg|Svg|Icon)>)\s*\)/g,
+  functionComponent: /export\s+(?:default\s+)?function\s+(\w+)\s*\([^)]*\)\s*(?::\s*[^{]+)?\s*\{[\s\S]*?return\s*\(\s*(<(?:svg|Svg|Icon|Path|G|Circle|Rect|Line|Polygon|Polyline|Ellipse)\b[\s\S]*?<\/(?:svg|Svg|Icon|G|Path|Circle|Rect|Line|Polygon|Polyline|Ellipse)>)\s*\)/g,
 
   // Pattern 2: export const IconName = () => <svg>...</svg> or with ()
-  arrowFunctionDirect: /export\s+const\s+(\w+)\s*(?::\s*[^=]+)?\s*=\s*\([^)]*\)\s*=>\s*\(\s*(<(?:svg|Svg|Icon)\b[\s\S]*?<\/(?:svg|Svg|Icon)>)\s*\)/g,
+  arrowFunctionDirect: /export\s+const\s+(\w+)\s*(?::\s*[^=]+)?\s*=\s*\([^)]*\)\s*=>\s*\(\s*(<(?:svg|Svg|Icon|Path|G|Circle|Rect|Line|Polygon|Polyline|Ellipse)\b[\s\S]*?<\/(?:svg|Svg|Icon|G|Path|Circle|Rect|Line|Polygon|Polyline|Ellipse)>)\s*\)/g,
   
   // Pattern 2b: export const IconName = () => { return <svg>...</svg> }
-  arrowFunctionReturn: /export\s+const\s+(\w+)\s*(?::\s*[^=]+)?\s*=\s*\([^)]*\)\s*=>\s*\{[\s\S]*?return\s*\(\s*(<(?:svg|Svg|Icon)\b[\s\S]*?<\/(?:svg|Svg|Icon)>)\s*\)/g,
+  arrowFunctionReturn: /export\s+const\s+(\w+)\s*(?::\s*[^=]+)?\s*=\s*\([^)]*\)\s*=>\s*\{[\s\S]*?return\s*\(\s*(<(?:svg|Svg|Icon|Path|G|Circle|Rect|Line|Polygon|Polyline|Ellipse)\b[\s\S]*?<\/(?:svg|Svg|Icon|G|Path|Circle|Rect|Line|Polygon|Polyline|Ellipse)>)\s*\)/g,
 
   // Pattern 3: export const IconName = forwardRef<...>((props, ref) => { return <Icon>...</Icon> })
-  forwardRef: /export\s+const\s+(\w+)\s*=\s*forwardRef[^(]*\(\s*\([^)]*\)\s*=>\s*(?:\{[\s\S]*?return\s*)?\(\s*(<(?:svg|Svg|Icon)\b[\s\S]*?<\/(?:svg|Svg|Icon)>)\s*\)/g,
+  forwardRef: /export\s+const\s+(\w+)\s*=\s*forwardRef[^(]*\(\s*\([^)]*\)\s*=>\s*(?:\{[\s\S]*?return\s*)?\(\s*(<(?:svg|Svg|Icon|Path|G|Circle|Rect|Line|Polygon|Polyline|Ellipse)\b[\s\S]*?<\/(?:svg|Svg|Icon|G|Path|Circle|Rect|Line|Polygon|Polyline|Ellipse)>)\s*\)/g,
 
   // Pattern 4: const IconName = memo(() => <svg>...</svg>)
-  memo: /(?:export\s+)?const\s+(\w+)\s*=\s*memo\s*\(\s*\([^)]*\)\s*=>\s*(?:\{[\s\S]*?return\s*)?\(\s*(<(?:svg|Svg|Icon)\b[\s\S]*?<\/(?:svg|Svg|Icon)>)\s*\)/g,
+  memo: /(?:export\s+)?const\s+(\w+)\s*=\s*memo\s*\(\s*\([^)]*\)\s*=>\s*(?:\{[\s\S]*?return\s*)?\(\s*(<(?:svg|Svg|Icon|Path|G|Circle|Rect|Line|Polygon|Polyline|Ellipse)\b[\s\S]*?<\/(?:svg|Svg|Icon|G|Path|Circle|Rect|Line|Polygon|Polyline|Ellipse)>)\s*\)/g,
 }
 
 /**
