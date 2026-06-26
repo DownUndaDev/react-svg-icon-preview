@@ -54,7 +54,7 @@ export const IconName = memo(() => <svg>...</svg>);
 
 ### From VSIX
 
-1. Download the `.vsix` file from releases
+1. Download the `.vsix` file from releases or install from source locally (below)
 2. In VS Code/Cursor: Extensions → "..." → "Install from VSIX..."
 
 ### From Source
