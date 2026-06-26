@@ -83,6 +83,7 @@ export function jsxToSvg(
 
   const hasIconLikeTag = /<(?:Icon|Svg)\b/i.test(jsxString)
   let svg = jsxString
+  
 
   // Check if Icon/Svg wraps an inner <svg> element - if so, extract the inner svg
   const innerSvgMatch = svg.match(/<(?:Icon|Svg)\b[^>]*>\s*(<svg[\s\S]*<\/svg>)\s*<\/(?:Icon|Svg)>/i)
@@ -101,6 +102,31 @@ export function jsxToSvg(
     svg = svg.replace(/<\/Icon>/gi, '</svg>')
     svg = svg.replace(/<Svg\b/gi, '<svg')
     svg = svg.replace(/<\/Svg>/gi, '</svg>')
+
+    // React Native SVG primitives are already valid SVG tags
+    svg = svg.replace(/<Path\b/gi, '<path')
+    svg = svg.replace(/<\/Path>/gi, '</path>')
+
+    svg = svg.replace(/<Circle\b/gi, '<circle')
+    svg = svg.replace(/<\/Circle>/gi, '</circle>')
+
+    svg = svg.replace(/<Rect\b/gi, '<rect')
+    svg = svg.replace(/<\/Rect>/gi, '</rect>')
+
+    svg = svg.replace(/<Line\b/gi, '<line')
+    svg = svg.replace(/<\/Line>/gi, '</line>')
+
+    svg = svg.replace(/<Polygon\b/gi, '<polygon')
+    svg = svg.replace(/<\/Polygon>/gi, '</polygon>')
+
+    svg = svg.replace(/<Polyline\b/gi, '<polyline')
+    svg = svg.replace(/<\/Polyline>/gi, '</polyline>')
+
+    svg = svg.replace(/<Ellipse\b/gi, '<ellipse')
+    svg = svg.replace(/<\/Ellipse>/gi, '</ellipse>')
+
+    svg = svg.replace(/<G\b/gi, '<g')
+    svg = svg.replace(/<\/G>/gi, '</g>')
   }
 
   // Remove ref attribute
@@ -109,6 +135,10 @@ export function jsxToSvg(
   // Remove spread props like {...props}
   svg = svg.replace(/\s+\{\.\.\.props\}/g, '')
   svg = svg.replace(/\s+\{\.\.\.rest\}/g, '')
+
+  // Remove React Native specific props
+  svg = svg.replace(/\s+(testID|accessible|accessibilityLabel|accessibilityRole|pointerEvents|onPress)=\{[^}]*\}/g, '')
+  svg = svg.replace(/\s+style=\{[^}]*\}/g, '')
 
   // Remove color attribute (not valid in SVG, fill is used on child elements)
   svg = svg.replace(/\s+color=["'][^"']*["']/g, '')
@@ -171,6 +201,7 @@ export function jsxToSvg(
   })
 
   // Remove remaining JSX expressions that couldn't be resolved
+  svg = svg.replace(/\s+(\w+)=\{props\.(\w+)\}/g, ' $1="${defaultFillColor}"')
   svg = svg.replace(/\s+\w+=\{[^}]*\}/g, '')
 
   // Extract viewBox if present, otherwise use default
