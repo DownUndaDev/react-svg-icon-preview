@@ -9,12 +9,12 @@ import * as vscode from 'vscode'
 import {
   createDecorationProvider,
   clearDecorations,
-} from './decorationProvider'
+} from './provider/decorationProvider'
 import {
   createHoverProvider,
   clearComponentCache,
   updateComponentCache,
-} from './hoverProvider'
+} from './provider/hoverProvider'
 import { parseSvgComponents } from './svgParser'
 
 let decorationProvider: ReturnType<typeof createDecorationProvider> | undefined

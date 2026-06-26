@@ -6,7 +6,7 @@ import * as vscode from 'vscode'
 import * as path from 'path'
 import * as fs from 'fs'
 import * as os from 'os'
-import { ParsedSvgComponent, parseSvgComponents, parseRawSvgFile, isRawSvgContent } from './svgParser'
+import { ParsedSvgComponent, parseSvgComponents, parseRawSvgFile, isRawSvgContent } from '../svgParser'
 
 // Store decoration types for cleanup
 const decorationTypes: Map<string, vscode.TextEditorDecorationType> = new Map()

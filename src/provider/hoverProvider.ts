@@ -3,7 +3,7 @@
  */
 
 import * as vscode from 'vscode'
-import { ParsedSvgComponent, parseSvgComponents, parseRawSvgFile, isRawSvgContent, findComponentAtLine } from './svgParser'
+import { ParsedSvgComponent, parseSvgComponents, parseRawSvgFile, isRawSvgContent, findComponentAtLine } from '../svgParser'
 import { getTempFilePath } from './decorationProvider'
 
 // Cache parsed components per document
