@@ -1,10 +1,12 @@
 {
-  "name": "react-svg-icon-preview",
-  "displayName": "React SVG Preview",
-  "description": "Preview React SVG icon components with inline gutter icons and hover preview. Supports forwardRef, memo, arrow functions, and raw .svg files.",
-  "version": "0.1.2",
+  "name": "react-native-svg-icon-preview",
+  "displayName": "React[Native] SVG Preview Fork",
+  "description": "Preview React (and ReactNative) SVG icon components with inline gutter icons and hover preview. Supports forwardRef, memo, arrow functions, and raw .svg files. Forked by @DownUndaDev",
+  "version": "0.2.2",
   "publisher": "wbing",
-  "license": "MIT-0",
+  "contributors": [
+    "DownUndaDev"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/Bing-Wang-20161208/react-svg-icon-preview.git"

@@ -19,31 +19,31 @@ A VS Code/Cursor extension that provides inline preview and hover preview for Re
 ```tsx
 // Pattern 1: Standard function component
 export function IconName() {
-  return <svg>...</svg>
+  return <svg>...</svg>;
 }
 
 // Pattern 2: Arrow function
-export const IconName = () => <svg>...</svg>
+export const IconName = () => <svg>...</svg>;
 
 // Pattern 3: forwardRef (common in design systems)
-export const IconName = forwardRef<'svg', IconProps>((props, ref) => {
-  return <Icon viewBox="0 0 16 16">...</Icon>
-})
+export const IconName = forwardRef<"svg", IconProps>((props, ref) => {
+  return <Icon viewBox="0 0 16 16">...</Icon>;
+});
 
 // Pattern 4: memo
-export const IconName = memo(() => <svg>...</svg>)
+export const IconName = memo(() => <svg>...</svg>);
 ```
 
 ## Configuration
 
-| Setting | Type | Default | Description |
-|---------|------|---------|-------------|
-| `reactSvgPreview.enabled` | boolean | `true` | Enable/disable the extension |
-| `reactSvgPreview.iconSize` | number | `16` | Size of inline icon preview (px) |
-| `reactSvgPreview.showInlineIcon` | boolean | `true` | Show inline icon in gutter |
-| `reactSvgPreview.showHoverPreview` | boolean | `true` | Show hover preview |
-| `reactSvgPreview.hoverPreviewSize` | number | `64` | Size of hover preview (px) |
-| `reactSvgPreview.defaultFillColor` | string | `#888888` | Default fill for currentColor |
+| Setting                            | Type    | Default   | Description                      |
+| ---------------------------------- | ------- | --------- | -------------------------------- |
+| `reactSvgPreview.enabled`          | boolean | `true`    | Enable/disable the extension     |
+| `reactSvgPreview.iconSize`         | number  | `16`      | Size of inline icon preview (px) |
+| `reactSvgPreview.showInlineIcon`   | boolean | `true`    | Show inline icon in gutter       |
+| `reactSvgPreview.showHoverPreview` | boolean | `true`    | Show hover preview               |
+| `reactSvgPreview.hoverPreviewSize` | number  | `64`      | Size of hover preview (px)       |
+| `reactSvgPreview.defaultFillColor` | string  | `#888888` | Default fill for currentColor    |
 
 ## Commands
 
@@ -70,9 +70,7 @@ npm run compile
 npm run package
 
 # Install the generated .vsix file
-code --install-extension react-svg-preview-0.1.0.vsix
-# or for Cursor
-cursor --install-extension react-svg-preview-0.1.0.vsix
+code --install-extension react-native-svg-icon-preview-0.2.2.vsix
 ```
 
 ## Development
